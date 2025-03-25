@@ -15,6 +15,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 218, 217, 217),
       body: ListView(children: [
         Stack(
           children: [
@@ -121,53 +122,110 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           ],
         ),
         Text("The Most Relavant"),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(40),
-          ),
-          width: 300,
-          height: 300,
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(40),
-                    child: Image.network(
-                      ("https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2018/05/ANANTARA-KALUTARA.jpg?ssl=1"),
+        SizedBox(
+          height: 350,
+          child: ListView.builder(
+              itemCount: 4,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40),
+                        color: AppColors.primaryColor),
+                    width: 300,
+                    height: 250,
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(40),
+                              child: Image.network(
+                                ("https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2018/05/ANANTARA-KALUTARA.jpg?ssl=1"),
+                              ),
+                            ),
+                            Positioned(
+                              top: 20,
+                              right: 30,
+                              child: Container(
+                                width: 35,
+                                height: 35,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(35),
+                                    color:
+                                        const Color.fromARGB(192, 71, 69, 69)),
+                                child: Center(
+                                  child: const Icon(
+                                    Icons.favorite_outline,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Tiny Home in NuwaraEliya"),
+                              Row(
+                                children: [Icon(Icons.star), Text("5.65(217)")],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              FacilityItem(
+                                facilityName: "4 guests",
+                              ),
+                              FacilityItem(
+                                facilityName: "4 guests",
+                              ),
+                              FacilityItem(
+                                facilityName: "4 guests",
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                   ),
-                  Positioned(
-                    top: 20,
-                    right: 30,
-                    child: Container(
-                      width: 35,
-                      height: 35,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(35),
-                          color: const Color.fromARGB(192, 71, 69, 69)),
-                      child: Center(
-                        child: const Icon(
-                          Icons.favorite_outline,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  Text("Tiny Home in NuwaraEliya"),
-                  Row(
-                    children: [Icon(Icons.star), Text("5.65(217)")],
-                  )
-                ],
-              )
-            ],
-          ),
+                );
+              }),
         )
       ]),
+    );
+  }
+}
+
+class FacilityItem extends StatelessWidget {
+  const FacilityItem({super.key, required this.facilityName});
+
+  final String facilityName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 5,
+          height: 5,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5), color: Colors.black),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Text(facilityName)
+      ],
     );
   }
 }
