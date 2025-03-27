@@ -1,7 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:hotel_management_system/Models/hotel.dart';
+import 'package:hotel_management_system/Providers/hotel_provider.dart';
 import 'package:hotel_management_system/utils/app_colors.dart';
+import 'package:provider/provider.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -124,82 +127,92 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         Text("The Most Relavant"),
         SizedBox(
           height: 350,
-          child: ListView.builder(
-              itemCount: 4,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        color: AppColors.primaryColor),
-                    width: 300,
-                    height: 250,
-                    child: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            ClipRRect(
+          child: Consumer<HotelProvider>(builder: (context, hotels, child) {
+            print(hotels.hotelsData);
+            List<Hotel> allHotelData = hotels.hotelsData;
+            return hotels.hotelsData.isEmpty
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView.builder(
+                    itemCount: allHotelData.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Container(
+                          decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(40),
-                              child: Image.network(
-                                ("https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2018/05/ANANTARA-KALUTARA.jpg?ssl=1"),
-                              ),
-                            ),
-                            Positioned(
-                              top: 20,
-                              right: 30,
-                              child: Container(
-                                width: 35,
-                                height: 35,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(35),
-                                    color:
-                                        const Color.fromARGB(192, 71, 69, 69)),
-                                child: Center(
-                                  child: const Icon(
-                                    Icons.favorite_outline,
-                                    color: Colors.white,
+                              color: AppColors.primaryColor),
+                          width: 300,
+                          height: 250,
+                          child: Column(
+                            children: [
+                              Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(40),
+                                    child: Image.network(
+                                      (allHotelData[index].mainImage!),
+                                    ),
                                   ),
+                                  Positioned(
+                                    top: 20,
+                                    right: 30,
+                                    child: Container(
+                                      width: 35,
+                                      height: 35,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(35),
+                                          color: const Color.fromARGB(
+                                              192, 71, 69, 69)),
+                                      child: Center(
+                                        child: const Icon(
+                                          Icons.favorite_outline,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 15),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(allHotelData[index].title!),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.star),
+                                        Text("${allHotelData[index].rating}")
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                            )
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Tiny Home in NuwaraEliya"),
-                              Row(
-                                children: [Icon(Icons.star), Text("5.65(217)")],
-                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: List.generate(
+                                      allHotelData[index].amenities!.length,
+                                      (findex) => FacilityItem(
+                                        facilityName: allHotelData[index]
+                                            .amenities![findex],
+                                      ),
+                                    )),
+                              )
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              FacilityItem(
-                                facilityName: "4 guests",
-                              ),
-                              FacilityItem(
-                                facilityName: "4 guests",
-                              ),
-                              FacilityItem(
-                                facilityName: "4 guests",
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              }),
+                      );
+                    });
+          }),
         )
       ]),
     );
