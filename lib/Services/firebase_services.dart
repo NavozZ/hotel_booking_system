@@ -1,12 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hotel_management_system/Models/hotel.dart';
 
 class FirebaseServices {
-  static getHotels() async {
+  //get example documents from Firebase DB and return Hotel type data
+  static Future<List<Hotel>> getHotels() async {
+    // get data from Firebase DB
     CollectionReference hotelCollectionReference =
         FirebaseFirestore.instance.collection('hotels');
 
-    final hotels = await hotelCollectionReference.get();
+    final hotelDocuments = await hotelCollectionReference.get();
 
-    print(hotels.docs[0]["title"]);
+    hotelCollectionReference.get().then((hotelDocuments) {});
+
+    List<Hotel> hotels = [];
+    for (var hotelDoc in hotelDocuments.docs) {
+      hotels.add(Hotel(
+        title: hotelDoc["title"],
+        rating: hotelDoc["Rating"],
+        prices: hotelDoc["Prices"],
+        mainImage: hotelDoc["main-image"],
+        otherImages: hotelDoc["other-images"],
+        amenities: hotelDoc["amenities"],
+      ));
+    }
+    return hotels; // Return the list of hotels
   }
 }
