@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hotel_management_system/Providers/hotel_provider.dart';
+import 'package:hotel_management_system/Screens/auth/auth_screen.dart';
+import 'package:hotel_management_system/Screens/auth/sign_in_screen.dart';
+import 'package:hotel_management_system/Screens/auth/sign_up_screen.dart';
 import 'package:hotel_management_system/homePage.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Homepage(),
+      home: const AuthScreen(),
     );
   }
 }

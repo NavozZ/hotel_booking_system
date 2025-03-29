@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_management_system/Providers/hotel_provider.dart';
-import 'package:hotel_management_system/Screens/booking_screen.dart';
-import 'package:hotel_management_system/Screens/discover_screen.dart';
-import 'package:hotel_management_system/Screens/favourites_screen.dart';
-import 'package:hotel_management_system/Screens/message_screen.dart';
+import 'package:hotel_management_system/Screens/main/booking_screen.dart';
+import 'package:hotel_management_system/Screens/main/discover_screen.dart';
+import 'package:hotel_management_system/Screens/main/favourites_screen.dart';
+import 'package:hotel_management_system/Screens/main/message_screen.dart';
 import 'package:hotel_management_system/Services/firebase_services.dart';
 import 'package:provider/provider.dart';
 
