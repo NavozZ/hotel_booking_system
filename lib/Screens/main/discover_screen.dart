@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hotel_management_system/Models/hotel.dart';
 import 'package:hotel_management_system/Providers/hotel_provider.dart';
@@ -34,9 +35,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/29/ea/9a/4b/hotel-image.jpg?w=1200&h=-1&s=1"),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
-                          // ignore: deprecated_member_use
-                          Colors.black.withOpacity(0.5),
-                          BlendMode.darken))),
+                          Colors.black.withOpacity(0.5), BlendMode.darken))),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
@@ -55,9 +54,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                               )),
                         ],
                       ),
-                      Icon(
-                        Icons.person,
-                        color: AppColors.primaryColor,
+                      InkWell(
+                        onTap: () {
+                          signout();
+                        },
+                        child: Icon(
+                          Icons.logout,
+                          color: AppColors.primaryColor,
+                        ),
                       )
                     ],
                   ),
@@ -216,6 +220,10 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         )
       ]),
     );
+  }
+
+  Future signout() async {
+    await FirebaseAuth.instance.signOut();
   }
 }
 
