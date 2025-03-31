@@ -5,8 +5,10 @@ class Hotel {
   String? mainImage;
   List<dynamic>? otherImages;
   List<dynamic>? amenities;
+  String? id;
 
   Hotel({
+    this.id,
     this.title,
     this.rating,
     this.prices,
