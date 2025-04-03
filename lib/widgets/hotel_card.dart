@@ -1,11 +1,19 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hotel_management_system/Models/booking.dart';
 import 'package:hotel_management_system/Models/hotel.dart';
+import 'package:hotel_management_system/Providers/booking_provider.dart';
 import 'package:hotel_management_system/Providers/hotel_provider.dart';
 import 'package:hotel_management_system/Services/firebase_services.dart';
+import 'package:hotel_management_system/Services/payment_gateway_service/payment_gateway.dart';
 import 'package:hotel_management_system/utils/app_colors.dart';
+import 'package:hotel_management_system/widgets/custom_button.dart';
 import 'package:hotel_management_system/widgets/facility_item.dart';
+import 'package:hotel_management_system/widgets/hotel_booking_date_picker.dart';
+import 'package:hotel_management_system/widgets/price_card.dart';
 import 'package:provider/provider.dart';
 
 class HotelCard extends StatefulWidget {
@@ -156,227 +164,193 @@ class _HotelCardState extends State<HotelCard> {
   }
 
   hotelDetailBottomSheet({required Hotel hotel}) {
+    List<PriceCard> priceCardList = [];
+    int hotelTypeIndex = 0;
+    hotel.prices!.forEach(
+      (key, value) {
+        priceCardList.add(
+          PriceCard(
+            priceName: key,
+            price: value.toString(),
+            index: hotelTypeIndex,
+          ),
+        );
+        hotelTypeIndex++;
+      },
+    );
+
     showModalBottomSheet(
       backgroundColor: Colors.white,
+      elevation: 8.0,
+      isScrollControlled: true,
       context: context,
-      isScrollControlled:
-          true, // Ensure bottom sheet height adjusts dynamically
       builder: (context) {
         return Container(
           width: double.infinity,
-          decoration: BoxDecoration(
+          height: 700,
+          decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Carousel Slider with adjusted image width
-              Stack(
-                children: [
-                  CarouselSlider(
-                    options: CarouselOptions(
-                        height: 200.0, autoPlay: true, enlargeCenterPage: true),
-                    items: hotel.otherImages!.map((image) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.network(
-                              image,
-                              height: 200,
-                              width: MediaQuery.of(context)
-                                  .size
-                                  .width, // Make image width fit screen
-                              fit: BoxFit.cover,
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CarouselSlider(
+                  options: CarouselOptions(
+                    height: 200.0,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
                   ),
-                  // Floating Close Button
-                  Positioned(
-                    top: 10.0,
-                    right: 10.0,
-                    child: IconButton(
-                      icon: Icon(Icons.close, color: Colors.white, size: 30),
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Close the bottom sheet
-                      },
-                    ),
-                  ),
-                ],
-              ),
-
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Text(
-                  hotel.title!,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15, bottom: 15),
-                child: Row(
-                  children: [
-                    Icon(Icons.star, color: Colors.black),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Text(hotel.rating.toString())
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Divider(),
-              ),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Entire Room",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
-                            Text("Hosted by isabelle"),
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        Icons.person,
-                        size: 50,
-                      )
-                    ],
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Divider(),
-              ),
-
-              // Amenities section - Each amenity in its own box (In a Row)
-              Padding(
-                padding: const EdgeInsets.only(left: 20, top: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Topic Style
-                    Text(
-                      "Amenities",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.black, // Add color for the header
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Create a row for each amenity
-                    Wrap(
-                      spacing: 10.0, // Add space between each amenity
-                      runSpacing: 10.0, // Add space between lines of amenities
-                      children: hotel.amenities!.map((amenity) {
-                        return Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 83, 79,
-                                79), // Light background color for readability
-                            borderRadius:
-                                BorderRadius.circular(8), // Rounded corners
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            amenity,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: const Color.fromARGB(255, 255, 255, 255),
-                            ),
+                  items: hotel.otherImages!.map((image) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.network(
+                            image,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
                           ),
                         );
-                      }).toList(),
-                    ),
-                  ],
+                      },
+                    );
+                  }).toList(),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Divider(),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: const Color.fromARGB(202, 0, 0, 0),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(
+                    hotel.title!,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
                   ),
-                  width: double.infinity,
-                  height: 60,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0, bottom: 15),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Price and Date section
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "18.oct.3 Nights",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                          Text(
-                            "\$300",
-                            style: TextStyle(color: Colors.white, fontSize: 15),
-                          ),
-                        ],
+                      const Icon(
+                        Icons.star,
+                        color: Colors.black,
                       ),
-
-                      // Book Now Button
-                      InkWell(
-                        onTap: () {
-                          // Add functionality here for booking
-                          print("Book Now button clicked");
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 12),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color:
-                                Colors.orange, // You can adjust the color here
-                          ),
-                          child: Text(
-                            "Book Now",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
-                        ),
-                      )
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Text(hotel.rating.toString())
                     ],
                   ),
                 ),
-              ),
-            ],
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Divider(),
+                ),
+                SizedBox(
+                  height: 48,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: hotel.amenities!.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(4)),
+                          child: Text(
+                            hotel.amenities![index],
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 240,
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: priceCardList.length,
+                    itemBuilder: (context, index) {
+                      return priceCardList[index];
+                    },
+                  ),
+                ),
+                const HotelBookingDatePicker(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Price : ",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
+                      ),
+                      Text(
+                        "${context.watch<BookingProvider>().totalPrice} \$",
+                        style: const TextStyle(
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Center(
+                  child: CustomButton(
+                    btntext: "BOOK",
+                    onTap: () {
+                      FirebaseServices.addABooking(
+                        Booking(
+                          bookingType:
+                              context.read<BookingProvider>().bookingHotelType,
+                          price:
+                              context.read<BookingProvider>().bookingHotelPrice,
+                          checkingDate:
+                              context.read<BookingProvider>().checkingDate,
+                          checkoutDate:
+                              context.read<BookingProvider>().checkoutDate,
+                          hotelId: hotel.id,
+                          userId: FirebaseAuth.instance.currentUser!.email,
+                          paymentStatus: false,
+                        ),
+                      );
+
+                      PaymentGateway.initPaymentSheet(
+                        amount: context
+                            .read<BookingProvider>()
+                            .totalPrice
+                            .substring(
+                                0,
+                                context
+                                        .read<BookingProvider>()
+                                        .totalPrice
+                                        .length -
+                                    2),
+                      ).then((val) async {
+                        await Stripe.instance.presentPaymentSheet();
+                      });
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                )
+              ],
+            ),
           ),
         );
       },

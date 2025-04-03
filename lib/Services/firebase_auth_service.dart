@@ -1,13 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hotel_management_system/Screens/auth/sign_in_screen.dart';
-import 'package:hotel_management_system/Screens/auth/sign_up_screen.dart';
+
 import 'package:hotel_management_system/Services/firebase_services.dart';
 
 class FirebaseAuthService {
   static Future<String> signIn(
       {required String email, required String password}) async {
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );

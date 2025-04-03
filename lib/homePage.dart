@@ -4,6 +4,7 @@ import 'package:hotel_management_system/Screens/main/booking_screen.dart';
 import 'package:hotel_management_system/Screens/main/discover_screen.dart';
 import 'package:hotel_management_system/Screens/main/favourites_screen.dart';
 import 'package:hotel_management_system/Screens/main/message_screen.dart';
+import 'package:hotel_management_system/Services/firebase_notification_service.dart';
 import 'package:hotel_management_system/Services/firebase_services.dart';
 import 'package:provider/provider.dart';
 
@@ -28,6 +29,13 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    FirebaseNotificationService.initNotification();
+
+    FirebaseServices.getCurrentUserFavouriteHotels().then((val) {
+      context
+          .read<HotelProvider>()
+          .addFavouriteHotelIds(favouriteHotelIds: val);
+    });
 
     FirebaseServices.getHotels().then((hotelsData) {
       context.read<HotelProvider>().addHotels(hotels: hotelsData);
@@ -61,7 +69,9 @@ class _HomepageState extends State<Homepage> {
                 bottomNavigationIcon(
                     icon: Icons.shopping_bag, iconText: "Booking", index: 2),
                 bottomNavigationIcon(
-                    icon: Icons.message_sharp, iconText: "Messages", index: 3),
+                    icon: Icons.notifications,
+                    iconText: "Notifications",
+                    index: 3),
               ],
             ),
           ),

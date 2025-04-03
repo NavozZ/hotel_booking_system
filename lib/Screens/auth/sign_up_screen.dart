@@ -1,7 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hotel_management_system/Services/firebase_auth_service.dart';
-import 'package:hotel_management_system/utils/Validation/validation.dart';
+
 import 'package:hotel_management_system/widgets/custom_button.dart';
 import 'package:hotel_management_system/widgets/custom_text_field.dart';
 

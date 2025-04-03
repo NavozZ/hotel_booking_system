@@ -6,7 +6,6 @@ import 'package:hotel_management_system/Models/hotel.dart';
 import 'package:hotel_management_system/Providers/hotel_provider.dart';
 import 'package:hotel_management_system/Services/firebase_services.dart';
 import 'package:hotel_management_system/utils/app_colors.dart';
-import 'package:hotel_management_system/utils/utility/utility_services.dart';
 import 'package:hotel_management_system/widgets/hotel_card.dart';
 import 'package:provider/provider.dart';
 
@@ -151,9 +150,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     itemCount: allHotelData.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      // bool favouriteHotel = UtilityService.isInTheList(
-                      //     list: ["Em9QKkjkR37E5jbVvAeC"],
-                      //     value: allHotelData[index].id!);
                       return HotelCard(
                           hotelData: allHotelData[index],
                           favouriteHotel: false);
