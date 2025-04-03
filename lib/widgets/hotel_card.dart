@@ -51,113 +51,130 @@ class _HotelCardState extends State<HotelCard> {
               color: AppColors.primaryColor),
           width: 300,
           height: 250,
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(
-                        widget.isDiscoverScreen ? 40 : 15),
-                    child: Image.network(
-                      (widget.hotelData.mainImage!),
-                    ),
+          child: Column(children: [
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(widget.isDiscoverScreen ? 40 : 15),
+                  child: Image.network(
+                    (widget.hotelData.mainImage!),
                   ),
-                  if (widget.isDiscoverScreen) ...[
-                    Positioned(
-                      top: 20,
-                      right: 30,
-                      child: Container(
-                        width: 35,
-                        height: 35,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(35),
-                            color: const Color.fromARGB(192, 71, 69, 69)),
-                        child: Center(
-                          child: InkWell(
-                            onTap: favouriteHotelCard
-                                //Remove Favourite Hotel
-                                ? () {
-                                    var currentHotelList = context
-                                        .read<HotelProvider>()
-                                        .favouriteHotelIds;
-                                    currentHotelList
-                                        .remove(widget.hotelData.id!);
-                                    FirebaseServices.removeHotelFromFavourite(
-                                      updatedHotelList: currentHotelList,
-                                      removedItemId: widget.hotelData.id!,
-                                      context: context,
-                                    );
-                                    Fluttertoast.showToast(
-                                      msg: "Remove From Favorite",
+                ),
+                if (widget.isDiscoverScreen) ...[
+                  Positioned(
+                    top: 20,
+                    right: 30,
+                    child: Container(
+                      width: 35,
+                      height: 35,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(35),
+                          color: const Color.fromARGB(192, 71, 69, 69)),
+                      child: Center(
+                        child: InkWell(
+                          onTap: favouriteHotelCard
+                              //Remove Favourite Hotel
+                              ? () {
+                                  var currentHotelList = context
+                                      .read<HotelProvider>()
+                                      .favouriteHotelIds;
+                                  currentHotelList.remove(widget.hotelData.id!);
+                                  FirebaseServices.removeHotelFromFavourite(
+                                    updatedHotelList: currentHotelList,
+                                    removedItemId: widget.hotelData.id!,
+                                    context: context,
+                                  );
+                                  Fluttertoast.showToast(
+                                    msg: "Remove From Favorite",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    backgroundColor:
+                                        const Color.fromARGB(139, 0, 0, 0),
+                                    textColor: Colors.redAccent,
+                                    fontSize: 16.0,
+                                  );
+                                }
+                              //Add Favourite Hotel
+                              : () {
+                                  FirebaseServices.addFavouriteHotel(
+                                    hotelId: widget.hotelData.id!,
+                                    context: context,
+                                  );
+                                  Fluttertoast.showToast(
+                                      msg: "Add to Favorite",
                                       toastLength: Toast.LENGTH_SHORT,
                                       gravity: ToastGravity.BOTTOM,
                                       backgroundColor:
                                           const Color.fromARGB(139, 0, 0, 0),
-                                      textColor: Colors.redAccent,
-                                      fontSize: 16.0,
-                                    );
-                                  }
-                                //Add Favourite Hotel
-                                : () {
-                                    FirebaseServices.addFavouriteHotel(
-                                      hotelId: widget.hotelData.id!,
-                                      context: context,
-                                    );
-                                    Fluttertoast.showToast(
-                                        msg: "Add to Favorite",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        backgroundColor:
-                                            const Color.fromARGB(139, 0, 0, 0),
-                                        textColor: Colors.green,
-                                        fontSize: 16.0);
-                                  },
-                            child: Icon(
-                              context
-                                      .watch<HotelProvider>()
-                                      .favouriteHotelIds
-                                      .contains(widget.hotelData.id)
-                                  ? Icons.favorite_outlined
-                                  : Icons.favorite_outline,
-                              color: Colors.white,
-                            ),
+                                      textColor: Colors.green,
+                                      fontSize: 16.0);
+                                },
+                          child: Icon(
+                            context
+                                    .watch<HotelProvider>()
+                                    .favouriteHotelIds
+                                    .contains(widget.hotelData.id)
+                                ? Icons.favorite_outlined
+                                : Icons.favorite_outline,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                    )
-                  ]
+                    ),
+                  )
+                ]
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.hotelData.title!,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      const Icon(Icons.star, color: Colors.amber, size: 20),
+                      const SizedBox(width: 4),
+                      Text(
+                        "${widget.hotelData.rating}",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
+            ),
+            if (widget.isDiscoverScreen) ...[
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(widget.hotelData.title!),
-                    Row(
-                      children: [
-                        Icon(Icons.star),
-                        Text("${widget.hotelData.rating}")
-                      ],
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: List.generate(
+                    widget.hotelData.amenities!.length,
+                    (findex) => Padding(
+                      padding: const EdgeInsets.only(right: 8), // Added spacing
+                      child: FacilityItem(
+                        facilityName: widget.hotelData.amenities![findex],
+                      ),
                     ),
-                  ],
+                  ),
                 ),
               ),
-              if (widget.isDiscoverScreen) ...[
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(
-                        widget.hotelData.amenities!.length,
-                        (findex) => FacilityItem(
-                          facilityName: widget.hotelData.amenities![findex],
-                        ),
-                      )),
-                )
-              ]
             ],
-          ),
+          ]),
         ),
       ),
     );
@@ -313,21 +330,21 @@ class _HotelCardState extends State<HotelCard> {
                   child: CustomButton(
                     btntext: "BOOK",
                     onTap: () {
-                      FirebaseServices.addABooking(
-                        Booking(
-                          bookingType:
-                              context.read<BookingProvider>().bookingHotelType,
-                          price:
-                              context.read<BookingProvider>().bookingHotelPrice,
-                          checkingDate:
-                              context.read<BookingProvider>().checkingDate,
-                          checkoutDate:
-                              context.read<BookingProvider>().checkoutDate,
-                          hotelId: hotel.id,
-                          userId: FirebaseAuth.instance.currentUser!.email,
-                          paymentStatus: false,
-                        ),
-                      );
+                      // FirebaseServices.addABooking(
+                      //   Booking(
+                      //     bookingType:
+                      //         context.read<BookingProvider>().bookingHotelType,
+                      //     price:
+                      //         context.read<BookingProvider>().bookingHotelPrice,
+                      //     checkingDate:
+                      //         context.read<BookingProvider>().checkingDate,
+                      //     checkoutDate:
+                      //         context.read<BookingProvider>().checkoutDate,
+                      //     hotelId: hotel.id,
+                      //     userId: FirebaseAuth.instance.currentUser!.email,
+                      //     paymentStatus: false,
+                      //   ),
+                      // );
 
                       PaymentGateway.initPaymentSheet(
                         amount: context

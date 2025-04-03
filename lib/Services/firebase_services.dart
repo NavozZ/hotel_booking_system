@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hotel_management_system/Models/booking.dart';
 import 'package:hotel_management_system/Models/hotel.dart';
+import 'package:hotel_management_system/Models/notification.dart';
 import 'package:hotel_management_system/Providers/hotel_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -139,5 +140,23 @@ class FirebaseServices {
         "payment-status": booking.paymentStatus,
       },
     );
+  }
+
+  static Future<List<NotificationData>> getNotification() async {
+    //get data from firebase db
+    CollectionReference notificationCollectionReference =
+        FirebaseFirestore.instance.collection("notification");
+
+    final notificationDocuments = await notificationCollectionReference.get();
+
+    List<NotificationData> notifications = [];
+    for (var notificationDoc in notificationDocuments.docs) {
+      notifications.add(NotificationData(
+        title: notificationDoc["title"],
+        body: notificationDoc["body"],
+        date: notificationDoc["date"],
+      ));
+    }
+    return notifications; // Return the list of hotels
   }
 }

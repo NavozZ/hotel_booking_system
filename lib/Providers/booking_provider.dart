@@ -8,20 +8,20 @@ class BookingProvider extends ChangeNotifier {
   String totalPrice = "0";
   updateCheckingDate({required String checkingDate}) {
     updatedCheckingDate = checkingDate;
-    //getSelectedPackagePrice();
+    getSelectedPackagePrice();
     notifyListeners();
   }
 
   updateCheckoutDate({required String checkoutDate}) {
     updatedCheckoutDate = checkoutDate;
-    //getSelectedPackagePrice();
+    getSelectedPackagePrice();
     notifyListeners();
   }
 
   updateHotelType({required String price, required String bookingType}) {
     this.price = price;
     this.bookingType = bookingType;
-    //getSelectedPackagePrice();
+    getSelectedPackagePrice();
     notifyListeners();
   }
 

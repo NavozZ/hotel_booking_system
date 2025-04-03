@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:hotel_management_system/Services/firebase_services.dart';
 
 class MessageScreen extends StatefulWidget {
   const MessageScreen({super.key});
@@ -10,11 +11,21 @@ class MessageScreen extends StatefulWidget {
 
 class _MessageScreenState extends State<MessageScreen> {
   @override
+  void initState() {
+    super.initState();
+    FirebaseServices.getNotification().then((notification) {
+      for (var val in notification) {
+        print(val.title);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder(
         stream:
-            FirebaseFirestore.instance.collection("notifications").snapshots(),
+            FirebaseFirestore.instance.collection("notification").snapshots(),
         builder: (context, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(

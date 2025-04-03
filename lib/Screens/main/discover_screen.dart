@@ -136,7 +136,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             )
           ],
         ),
-        Text("The Most Relavant"),
+        Padding(
+          padding: const EdgeInsets.only(left: 15, top: 15, bottom: 15),
+          child: Text(
+            "The Most Relavant",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+        ),
         SizedBox(
           height: 350,
           child: Consumer<HotelProvider>(builder: (context, hotels, child) {
